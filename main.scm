@@ -39,6 +39,10 @@
 (define template-path (or (get-environment-variable "PANDOC_TEMPLATE")
 			  "template.html"))
 
+(assert (> (string-length src-dir) 0))
+(assert (> (string-length out-dir) 0))
+(assert (> (string-length template-path) 0))
+
 (define (process-path path)
   (match path
     [(? is-md?) (process-md path)]
