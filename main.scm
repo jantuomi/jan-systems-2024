@@ -50,6 +50,7 @@
   (string=? "md" (last parts)))
 
 (define (process-md md-path)
+  (printf "[info] processing markdown file ~A~%" md-path)
   (define out-html-file (pipe md-path
 			      (lambda (p) (irregex-replace (format "^~A" src-dir) p out-dir))
 			      (lambda (p) (irregex-replace "\.md$" p ".html"))))
@@ -64,10 +65,10 @@
 		     "--standalone"
 		     "--template" template-path
 		     "--highlight-style" "pygments"))
-  (printf "pandoc ~A" args)
   (process "pandoc" args))
 
 (define (process-dir dir-path)
+  (printf "[info] processing directory ~A~%" dir-path)
   (define out-dir-path (irregex-replace (format "^~A" src-dir) out-dir))
   (create-directory out-dir-path #t)
   (define paths (glob (format "~A/*" dir-path)))
@@ -83,5 +84,10 @@
 
 ; run
 
+(printf "[info] cleaning up output directory (~A)~%" out-dir)
 (clean-dir out-dir)
+(printf "[info] generating site with pages from (~A)~%" src-dir)
 (process-dir src-dir)
+(printf "[info] done.~%")
+
+;; TODO generate feed with https://wiki.call-cc.org/eggref/5/atom
