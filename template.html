@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+$for(author-meta)$
+  <meta name="author" content="$author-meta$" />
+$endfor$
+$if(date-meta)$
+  <meta name="dcterms.date" content="$date-meta$" />
+$endif$
+$if(keywords)$
+  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
+$endif$
+$if(description-meta)$
+  <meta name="description" content="$description-meta$" />
+$endif$
+  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
+
+  <style>
+    $styles.html()$
+  </style>
+
+  <style>
+@font-face {
+    font-family: 'Merriweather';
+    src: url('/static/Merriweather-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Merriweather';
+    src: url('/static/Merriweather-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Merriweather';
+    src: url('/static/Merriweather-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+  </style>
+
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="alternate"
+    type="application/rss+xml"
+    title="RSS Feed for jan.systems"
+    href="/feed.xml" />
+
+$for(header-includes)$
+  $header-includes$
+$endfor$
+$if(math)$
+$if(mathjax)$
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+$endif$
+  $math$
+$endif$
+</head>
+<body>
+  <div class="header-row">
+    <h1><a class="page-title" href="/">jan&#39;s garden</a></h1>
+    <div id="dark-mode-btn"></div>
+  </div>
+  <nav>
+    <a href="/liked">liked</a> &#x2022;
+    <a href="/now">now</a> &#x2022;
+    <a href="/projects">projects</a> &#x2022;
+    <a href="/archive">archive</a>
+  </nav>
+
+$body$
+
+<script>
+document.querySelector("#dark-mode-btn").tagName = "button";
+document.querySelector("#dark-mode-btn").innerHTML = "🌓";
+
+const initialManualColorScheme = localStorage.getItem("colorScheme");
+// If null, no manual color scheme is set
+if (initialManualColorScheme === "dark") {
+  document.body.parentElement.classList.add("dark");
+} else if (initialManualColorScheme === "light") {
+  document.body.parentElement.classList.add("light");
+}
+
+function getCurrentManualColorScheme() {
+  if (document.body.parentElement.classList.contains("dark")) return "dark";
+  if (document.body.parentElement.classList.contains("light")) return "light";
+  return null;
+}
+
+document.querySelector("#dark-mode-btn").addEventListener("click", function () {
+  const manualColorScheme = getCurrentManualColorScheme();
+  const userPreferenceIsDark = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+  const currentColorScheme = manualColorScheme ?? (userPreferenceIsDark ? "dark" : "light");
+  const newColorScheme = currentColorScheme === "dark" ? "light" : "dark";
+
+  document.body.parentElement.classList.remove("dark", "light");
+  document.body.parentElement.classList.add(newColorScheme);
+
+  localStorage.setItem("colorScheme", newColorScheme);
+});
+</script>
+
+</body>
+</html>
