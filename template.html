@@ -63,7 +63,7 @@ $endif$
 </head>
 <body>
   <div class="header-row">
-    <h1><a class="page-title" href="/">jan&#39;s garden</a></h1>
+    <a class="page-title" href="/">jan&#39;s garden</a>
     <div id="dark-mode-btn"></div>
   </div>
   <nav>
@@ -73,6 +73,12 @@ $endif$
     <a href="/archive">archive</a>
   </nav>
 
+  $if(title)$
+  $if(hide-body-title)$
+  $else$
+  <h1>$title$ $if(date)$<small>($date$)</small>$endif$ $if(kind)$<small>[$kind$]</small>$endif$</h1>
+  $endif$
+  $endif$
 $body$
 
 <script>

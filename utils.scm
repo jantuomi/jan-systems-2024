@@ -35,4 +35,14 @@
 
   (define (submatch m #!optional (index 1))
     (irregex-match-substring m index))
+
+  (define (assocar key alist)
+    (match (assoc key alist)
+      [#f #f]
+      [pair (car pair)]))
+
+  (define (assocdr key alist)
+    (match (assoc key alist)
+      [#f #f]
+      [pair (cdr pair)]))
   )

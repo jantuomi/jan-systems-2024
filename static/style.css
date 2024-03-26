@@ -1,0 +1,164 @@
+body {
+    font-size: 16px;
+    margin: 20px auto;
+    padding: 10px 15px;
+    max-width: 800px;
+
+    font-family: "Merriweather", serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+
+    line-height: 35px;
+
+    hyphens: initial;
+}
+
+:root {
+    --dark--text-color: #fff;
+    --dark--link-color: #bbf;
+    --dark--bg-color: #222;
+    --dark--blockquote-color: #ccc;
+    --dark--blockquote-bg-color: #60606020;
+    --dark--code-bg-color: #353535;
+
+    --light--text-color: #1a1a1a;
+    --light--link-color: #0090a0;
+    --light--bg-color: #fff;
+    --light--blockquote-color: #606060;
+    --light--blockquote-bg-color: #c8c8c820;
+    --light--code-bg-color: #eee;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-color: var(--dark--text-color);
+        --link-color: var(--dark--link-color);
+        --bg-color: var(--dark--bg-color);
+        --blockquote-color: var(--dark--blockquote-color);
+        --blockquote-bg-color: var(--dark--blockquote-bg-color);
+        --code-bg-color: var(--dark--code-bg-color);
+    }
+}
+@media (prefers-color-scheme: light) {
+    :root {
+        --text-color: var(--light--text-color);
+        --link-color: var(--light--link-color);
+        --bg-color: var(--light--bg-color);
+        --blockquote-color: var(--light--blockquote-color);
+        --blockquote-bg-color: var(--light--blockquote-bg-color);
+        --code-bg-color: var(--light--code-bg-color);
+    }
+}
+
+html.dark {
+    --text-color: var(--dark--text-color);
+    --link-color: var(--dark--link-color);
+    --bg-color: var(--dark--bg-color);
+    --blockquote-color: var(--dark--blockquote-color);
+    --blockquote-bg-color: var(--dark--blockquote-bg-color);
+    --code-bg-color: var(--dark--code-bg-color);
+}
+
+html.light {
+    --text-color: var(--light--text-color);
+    --link-color: var(--light--link-color);
+    --bg-color: var(--light--bg-color);
+    --blockquote-color: var(--light--blockquote-color);
+    --blockquote-bg-color: var(--light--blockquote-bg-color);
+    --code-bg-color: var(--light--code-bg-color);
+}
+
+html {
+    color: var(--text-color);
+    background-color: var(--bg-color);
+}
+
+a, a:visited {
+    color: var(--link-color);
+}
+
+blockquote {
+    color: var(--blockquote-color);
+}
+
+#dark-mode-btn {
+    border: none;
+    background: none;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.header-row {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+
+    margin: 30px 0;
+}
+
+.header-row h1 {
+    margin: 0;
+}
+
+.page-title {
+    text-decoration: none;
+    color: var(--text-color) !important;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.page-title:hover {
+    text-decoration: underline;
+}
+
+code {
+    padding: 8px 10px;
+    background-color: var(--code-bg-color);
+}
+
+pre, div.sourceCode {
+    padding: 8px 10px;
+    overflow-x:	scroll;
+    background-color: var(--code-bg-color);
+}
+
+img {
+    max-width: 100%;
+    width: 100%;
+    margin: 20px 0;
+}
+
+blockquote {
+    display: block;
+    background-color: var(--blockquote-bg-color);
+    border-left: 10px solid var(--link-color);
+    margin: 20px 0;
+    padding: 2px 10px;
+    quotes: "\201C""\201D""\2018""\2019";
+}
+
+figure {
+    max-width: 100%;
+    padding: 0;
+    margin: 10px 0;
+    display: block;
+}
+
+hr {
+    background: none !important;
+    height: 0;
+    margin: 40px auto;
+    border: none;
+    border-top: 2px dotted var(--text-color) !important;
+    width: 50%;
+}
+
+.nojs-hidden {
+    display: none;
+}
+
+small {
+    color: grey;
+}

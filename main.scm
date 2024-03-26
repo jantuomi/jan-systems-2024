@@ -27,6 +27,8 @@
 			  "template.html"))
 (define feed-dir (or (get-environment-variable "FEED_DIR")
 		     (make-pathname src-dir "archive")))
+(define static-dir (or (get-environment-variable "STATIC_DIR")
+		       "static"))
 
 (assert (> (string-length src-dir) 0))
 (assert (> (string-length out-dir) 0))
@@ -118,12 +120,28 @@
 	(delete-file path)))
   (for-each (@ delete) (glob (format "~A/*" dir))))
 
+(define (remove-old-archive-index)
+  (define path (make-pathname feed-dir "index.md"))
+  (if (file-exists? path)
+      (delete-file path)))
+
+(define (copy-directory from to)
+  (read-string #f (process "cp" (list "-r"
+				      from
+				      to))))
+
 ;; run
 
-(printf "[info] generating feed from directory \"~A\"~%" feed-dir)
-(generate-feed feed-dir out-dir)
+(printf "[info] removing old archive index.md~%")
+(remove-old-archive-index)
 (printf "[info] cleaning up output directory \"~A\"~%" out-dir)
 (clean-dir out-dir)
+(printf "[info] generating feed from archive directory \"~A\"~%" feed-dir)
+(generate-feed src-dir feed-dir out-dir)
+(printf "[info] generating archive index.md~%")
+(generate-archive-index feed-dir src-dir)
 (printf "[info] generating site with pages from \"~A\"~%" src-dir)
 (process-dir src-dir)
+(printf "[info] copying static files from \"~A\"~%" static-dir)
+(copy-directory static-dir (make-pathname out-dir static-dir))
 (printf "[info] done.~%")
