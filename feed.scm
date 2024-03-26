@@ -14,13 +14,16 @@
 
   (define (generate-feed src-dir archive-dir out-dir)
     (define paths (glob (format "~A/*" archive-dir)))
+    (define archive-format (pipe archive-dir
+				 (@ replace (format "^~A\\/?" src-dir) "")
+				 (@ format "~A/%s")))
     (define output-port
       (process "vendor/bin/pandoc-rss"
 	       (apply list "-s"
 		      "-t" "jan's garden"
 		      "-d" "RSS feed for Jan's personal digital garden"
 		      "-l" "https://jan.systems"
-		      "-f" "%s"
+		      "-f" archive-format
 		      "-n" "en-GB"
 		      "-c" "CC BY-SA 4.0"
 		      "-w" "https://jan.systems"
@@ -71,9 +74,10 @@
     (define (compare a b)
       (string>? (assocdr 'date (cdr a)) (assocdr 'date (cdr b))))
 
-    (list-sort! compare index-alist)
+    (define index-alist (list-sort! compare index-alist))
 
     (define (to-li pair)
+      (printf "[info] indexing page ~A~%" pair)
       (define path (car pair))
       (define title (assocdr 'title (cdr pair)))
       (define date (assocdr 'date (cdr pair)))
@@ -86,6 +90,7 @@
     (define index-lis (map to-li index-alist))
     (define out-md (string-append "---\n"
 				  "title: Archive\n"
+				  "hide-body-title: defined\n"
 				  "---\n"
 				  "# Archive\n\n"
 				  (string-join index-lis "\n")))

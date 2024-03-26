@@ -100,11 +100,14 @@ get_date ()
     shift
     if date=$(get_metadata_value date "$input_file")
     then
-	if [ -f  /opt/homebrew/bin/gdate ]; then
+	if [ -f /opt/homebrew/bin/gdate ]; then
 	    date_cmd=/opt/homebrew/bin/gdate
-	else
+	elif [ -f /usr/bin/date ]; then
 	    date_cmd=/usr/bin/date
+	else
+	    date_cmd=/bin/date
 	fi
+
         $date_cmd --utc --date "$date" +'%a, %d %b %Y %T +0000'
     fi
 }
