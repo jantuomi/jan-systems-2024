@@ -31,6 +31,8 @@
     (irregex-replace irx in replacement))
 
   (define (replace-all irx replacement in)
-    (irregex-replace/all irx in replacement))  
+    (irregex-replace/all irx in replacement))
+
+  (define (submatch m #!optional (index 1))
+    (irregex-match-substring m index))
   )
-q
