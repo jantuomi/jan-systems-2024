@@ -6,29 +6,12 @@
 	(chicken pathname)
 	(chicken format)
 	(chicken process-context)
-	(chicken irregex)
 	(chicken process)
-	(matchable))
+	matchable
 
-; utils
-
-(define-syntax @
-  (syntax-rules ()
-    ((_ fn-body expr ...)
-     (lambda (x) (fn-body expr ... x)))))
-
-(define (last lst)
-  (if (null? (cdr lst))
-      (car lst)
-      (last (cdr lst))))
-
-(define (pipe x . fns)
-  (match fns
-    [() x]
-    [(fn . rest) (apply pipe (fn x) rest)]))
-
-(define (flow . fns)
-  (lambda (x) (apply pipe x fns)))
+	utils
+	feed
+	)
 
 ; application
 
@@ -38,6 +21,8 @@
 		    "out"))
 (define template-path (or (get-environment-variable "PANDOC_TEMPLATE")
 			  "template.html"))
+(define feed-dir (or (get-environment-variable "FEED_DIR")
+		     (make-pathname src-dir "archive")))
 
 (assert (> (string-length src-dir) 0))
 (assert (> (string-length out-dir) 0))
@@ -47,20 +32,18 @@
   (match path
     [(? is-md?) (process-md path)]
     [(? directory?) (process-dir (format "~A" path))]
-    [other (printf "TODO other file ~A~%" path)]))
+    [other (process-other-file other)]))
 
 (define (is-md? path)
   (define parts (string-split path "."))
   (string=? "md" (last parts)))
 
 (define (process-md md-path)
-  (printf "[info] processing markdown file ~A~%" md-path)
+  (printf "[info] converting markdown file \"~A\"" md-path)
   (define out-html-file (pipe md-path
-			      (lambda (p) (irregex-replace (format "^~A" src-dir) p out-dir))
-			      (lambda (p) (irregex-replace "\.md$" p ".html"))))
-
-  (define-values (html-dir html-filename html-ext) (decompose-pathname out-html-file))
-  (create-directory html-dir #t)
+			      (λ (p) (irregex-replace (format "^~A" src-dir) p out-dir))
+			      (λ (p) (irregex-replace "\.md$" p ".html"))))
+  (printf " to \"~A\"~%" out-html-file)
   (pandoc-md-to-html md-path out-html-file))
 
 (define (pandoc-md-to-html md-path html-path)
@@ -71,12 +54,21 @@
 		     "--highlight-style" "pygments"))
   (process "pandoc" args))
 
+(define (process-other-file path)
+    (printf "[info] copying other file \"~A\"" path)
+    (define out-path (replace (format "^~A" src-dir) out-dir path))
+    (printf " to \"~A\"~%" out-path)
+    (copy-file path out-path))
+
 (define (process-dir dir-path)
   (printf "[info] processing directory ~A~%" dir-path)
-  (define out-dir-path (irregex-replace (format "^~A" src-dir) out-dir))
+  (define out-dir-path (replace (format "^~A" src-dir) out-dir dir-path))
   (create-directory out-dir-path #t)
-  (define paths (glob (format "~A/*" dir-path)))
-  (define paths (map (lambda (p) (irregex-replace "^\./" p "")) paths))
+  (define paths (pipe dir-path
+		      (@ format "~A/*")
+		      (@ glob)
+		      (@ map (@ replace "^\./" ""))))
+
   (for-each process-path paths))
 
 (define (clean-dir dir)
@@ -88,10 +80,10 @@
 
 ; run
 
-(printf "[info] cleaning up output directory (~A)~%" out-dir)
+(printf "[info] cleaning up output directory \"~A\"~%" out-dir)
 (clean-dir out-dir)
-(printf "[info] generating site with pages from (~A)~%" src-dir)
+(printf "[info] generating site with pages from \"~A\"~%" src-dir)
 (process-dir src-dir)
+(printf "[info] generating feed~%")
+(generate-feed feed-dir)
 (printf "[info] done.~%")
-
-;; TODO generate feed with https://wiki.call-cc.org/eggref/5/atom
