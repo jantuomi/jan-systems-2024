@@ -57,10 +57,6 @@
 
   (define cwd (decompose-pathname md-path))
 
-  ;;(define wiki-image-irx "\\!\\[\\[(.+?)\\]\\]")
-  ;;(define (wiki-image-replace m) (format "![](/files/~A)" (submatch m)))
-  ;;(define result (pipe md (@ replace-all wiki-image-irx wiki-image-replace)))
-
   ;; Matches markdown links
   (define irx "\\[(.+?)\\]\\((.+?)\\)")
   (define (link-replace m)
@@ -68,13 +64,14 @@
     (define link (submatch m 2))
 
     ;; if link is absolute or external, leave as is.
-    ;; otherwise, normalize it to the current context
+    ;; otherwise, normalize it to the current directory context
     (define ret-link
       (if (or (substring=? "https://" link) (substring=? "/" link))
 	  link
 	  ;; else
 	  (normalize-pathname (make-pathname cwd link))))
 
+    ;; replace src-dir prefix with webroot prefix
     (define rooted (replace (format "^~A\\/?" src-dir) "/" ret-link))
     (format "[~A](~A)" alt rooted))
 
