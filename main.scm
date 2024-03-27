@@ -23,12 +23,15 @@
 		    "pages"))
 (define out-dir (or (get-environment-variable "OUT_DIR")
 		    "out"))
-(define template-path (or (get-environment-variable "PANDOC_TEMPLATE")
+(define template-path (or (get-environment-variable "TEMPLATE_PATH")
 			  "template.html"))
-(define feed-dir (or (get-environment-variable "FEED_DIR")
-		     (make-pathname src-dir "archive")))
+(define archive-subdir (or (get-environment-variable "ARCHIVE_SUBDIR")
+		     "archive"))
 (define static-dir (or (get-environment-variable "STATIC_DIR")
 		       "static"))
+
+(define md-work-dir (create-temporary-directory))
+(define html-work-dir (create-temporary-directory))
 
 (assert (> (string-length src-dir) 0))
 (assert (> (string-length out-dir) 0))
@@ -47,7 +50,7 @@
 (define (process-md md-path)
   (printf "[info] converting markdown file \"~A\"" md-path)
   (define out-html-file (pipe md-path
-			      (@ replace (format "^~A" src-dir) out-dir)
+			      (@ replace (format "^~A" md-work-dir) html-work-dir)
 			      (@ replace "\\.md$" ".html")))
   (printf " to \"~A\"~%" out-html-file)
   (define preprocessed-md-path (preprocess-md md-path))
@@ -74,7 +77,7 @@
 	  (normalize-pathname (make-pathname cwd link))))
 
     ;; replace src-dir prefix with webroot prefix
-    (define rooted (replace (format "^~A\\/?" src-dir) "/" ret-link))
+    (define rooted (replace (format "^~A\\/?" md-work-dir) "/" ret-link))
     (format "[~A](~A)" alt rooted))
 
   (define result (replace-all irx link-replace md))
@@ -98,15 +101,15 @@
 
 (define (process-other-file path)
   (printf "[info] copying other file \"~A\"" path)
-  (define out-path (replace (format "^~A" src-dir) out-dir path))
+  (define out-path (replace (format "^~A" md-work-dir) html-work-dir path))
   (printf " to \"~A\"~%" out-path)
   (copy-file path out-path))
 
-(define (process-dir dir-path)
-  (printf "[info] processing directory \"~A\"~%" dir-path)
-  (define out-dir-path (replace (format "^~A" src-dir) out-dir dir-path))
+(define (process-dir dir)
+  (printf "[info] processing directory \"~A\"~%" dir)
+  (define out-dir-path (replace (format "^~A" md-work-dir) html-work-dir dir))
   (create-directory out-dir-path #t)
-  (define paths (pipe dir-path
+  (define paths (pipe dir
 		      (@ format "~A/*")
 		      (@ glob)
 		      (@ map (@ replace "^\\.\\/" ""))))
@@ -120,28 +123,32 @@
 	(delete-file path)))
   (for-each (@ delete) (glob (format "~A/*" dir))))
 
-(define (remove-old-archive-index)
-  (define path (make-pathname feed-dir "index.md"))
-  (if (file-exists? path)
-      (delete-file path)))
-
 (define (copy-directory from to)
-  (read-string #f (process "cp" (list "-r"
-				      from
-				      to))))
+  (read-string #f (process "cp" (list "-r" from to))))
+
+(define (copy-all from to)
+  (define args (append (list "-r")
+		       (glob (format "~A/*" from))
+		       (list to)))
+  (read-string #f (process "cp" args)))
 
 ;; run
 
-(printf "[info] removing old archive index.md~%")
-(remove-old-archive-index)
+(printf "[info] copying pages to Markdown work directory \"~A\"~%" md-work-dir)
+(copy-all src-dir md-work-dir)
+(printf "[info] generating feed from archive subdirectory \"~A\"~%" archive-subdir)
+(generate-feed md-work-dir archive-subdir html-work-dir)
+(printf "[info] generating archive index.md~%")
+(generate-archive-index md-work-dir archive-subdir)
+(printf "[info] generating site with pages from \"~A\"~%" md-work-dir)
+(process-dir md-work-dir)
+(printf "[info] copying static files from \"~A\"~%" static-dir)
+(copy-directory static-dir (make-pathname html-work-dir static-dir))
 (printf "[info] cleaning up output directory \"~A\"~%" out-dir)
 (clean-dir out-dir)
-(printf "[info] generating feed from archive directory \"~A\"~%" feed-dir)
-(generate-feed src-dir feed-dir out-dir)
-(printf "[info] generating archive index.md~%")
-(generate-archive-index feed-dir src-dir)
-(printf "[info] generating site with pages from \"~A\"~%" src-dir)
-(process-dir src-dir)
-(printf "[info] copying static files from \"~A\"~%" static-dir)
-(copy-directory static-dir (make-pathname out-dir static-dir))
+(printf "[info] copying output files from work dir to out dir \"~A\"~%" out-dir)
+(copy-all html-work-dir out-dir)
+(printf "[info] removing temporary directories~%")
+(delete-directory md-work-dir #t)
+(delete-directory html-work-dir #t)
 (printf "[info] done.~%")

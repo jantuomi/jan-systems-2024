@@ -7,23 +7,22 @@
 	  (chicken process)
 	  (chicken pathname)
 	  (chicken irregex)
+	  (chicken sort)
 	  srfi-1
 	  srfi-13
-	  srfi-132
 	  utils)
 
-  (define (generate-feed src-dir archive-dir out-dir)
+  (define (generate-feed src-dir archive-subdir out-dir)
+    (define archive-dir (make-pathname src-dir archive-subdir))
     (define paths (glob (format "~A/*" archive-dir)))
-    (define archive-format (pipe archive-dir
-				 (@ replace (format "^~A\\/?" src-dir) "")
-				 (@ format "~A/%s")))
+    (define link-format (format "~A/%s" archive-subdir))
     (define output-port
       (process "vendor/bin/pandoc-rss"
 	       (apply list "-s"
 		      "-t" "jan's garden"
 		      "-d" "RSS feed for Jan's personal digital garden"
 		      "-l" "https://jan.systems"
-		      "-f" archive-format
+		      "-f" link-format
 		      "-n" "en-GB"
 		      "-c" "CC BY-SA 4.0"
 		      "-w" "https://jan.systems"
@@ -65,16 +64,22 @@
 
     (call/cc (@ inner)))
 
-  (define (generate-archive-index archive-dir src-dir)
+  (define (generate-archive-index src-dir archive-subdir)
+    (define archive-dir (make-pathname src-dir archive-subdir))
+    (printf "debug archive-dir: ~A~%" archive-dir)
+    (printf "debug glob: ~A~%" (glob (format "~A/*" archive-dir)))
     (define paths (pipe (glob (format "~A/*" archive-dir))
 			(@ filter (@ irregex-search "\\.md$"))))
 
-    (define index-alist (map (λ (path) (cons path (read-md-frontmatter path))) paths))
+    (define fm (map (λ (path) (cons path (read-md-frontmatter path))) paths))
+    (for-each (@ printf "~A~%") fm)
+    (printf "debug fm: ~A~%" fm)
+    (printf "debug list?: ~A~%" (list? fm))
     ;; newest first
-    (define (compare a b)
+    (define (less? a b)
       (string>? (assocdr 'date (cdr a)) (assocdr 'date (cdr b))))
 
-    (define index-alist (list-sort! compare index-alist))
+    (define fm-sorted (sort fm less?))
 
     (define (to-li pair)
       (printf "[info] indexing page ~A~%" pair)
@@ -87,7 +92,7 @@
 			 (@ replace "\\.md$" ".html")))
       (format "* [~A (~A) [~A]](~A)" title date kind link))
 
-    (define index-lis (map to-li index-alist))
+    (define index-lis (map to-li fm-sorted))
     (define out-md (string-append "---\n"
 				  "title: Archive\n"
 				  "hide-body-title: defined\n"
