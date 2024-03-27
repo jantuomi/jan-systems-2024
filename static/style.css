@@ -124,12 +124,6 @@ pre, div.sourceCode {
     background-color: var(--code-bg-color);
 }
 
-img {
-    max-width: 100%;
-    width: 100%;
-    margin: 20px 0;
-}
-
 blockquote {
     display: block;
     background-color: var(--blockquote-bg-color);
@@ -139,11 +133,26 @@ blockquote {
     quotes: "\201C""\201D""\2018""\2019";
 }
 
+img {
+    max-width: 100%;
+    width: 100%;
+    margin: 20px 0;
+}
+
 figure {
     max-width: 100%;
     padding: 0;
     margin: 10px 0;
     display: block;
+}
+
+figure img {
+    margin-bottom: 10px;
+}
+
+figure figcaption {
+    margin-bottom: 10px;
+    color: var(--blockquote-color);
 }
 
 hr {
@@ -160,5 +169,5 @@ hr {
 }
 
 small {
-    color: grey;
+    color: var(--blockquote-color);
 }
