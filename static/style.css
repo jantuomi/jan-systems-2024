@@ -171,3 +171,11 @@ hr {
 small {
     color: var(--blockquote-color);
 }
+
+ul, ol {
+    margin-left: 10px;
+}
+
+li::marker {
+    color: var(--link-color);
+}

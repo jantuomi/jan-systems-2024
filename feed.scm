@@ -66,15 +66,11 @@
 
   (define (generate-archive-index src-dir archive-subdir)
     (define archive-dir (make-pathname src-dir archive-subdir))
-    (printf "debug archive-dir: ~A~%" archive-dir)
-    (printf "debug glob: ~A~%" (glob (format "~A/*" archive-dir)))
     (define paths (pipe (glob (format "~A/*" archive-dir))
 			(@ filter (@ irregex-search "\\.md$"))))
 
     (define fm (map (λ (path) (cons path (read-md-frontmatter path))) paths))
     (for-each (@ printf "~A~%") fm)
-    (printf "debug fm: ~A~%" fm)
-    (printf "debug list?: ~A~%" (list? fm))
     ;; newest first
     (define (less? a b)
       (string>? (assocdr 'date (cdr a)) (assocdr 'date (cdr b))))
