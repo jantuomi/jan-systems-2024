@@ -94,6 +94,7 @@
 				  "hide-body-title: defined\n"
 				  "---\n"
 				  "# Archive\n\n"
+				  "Follow via [RSS](/feed.xml) ([Huh?](https://aboutfeeds.com/))\n\n"
 				  (string-join index-lis "\n")))
 
     (with-output-to-file (make-pathname archive-dir "index.md")
