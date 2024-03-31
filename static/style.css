@@ -15,63 +15,79 @@ body {
 }
 
 :root {
-    --dark--text-color: #fff;
+    --dark--header-color: #fff;
+    --dark--p-color: #eee;
     --dark--link-color: #bbf;
     --dark--bg-color: #222;
     --dark--blockquote-color: #ccc;
     --dark--blockquote-bg-color: #60606020;
     --dark--code-bg-color: #353535;
+    --dark--em-bg-color: #bbf4;
 
-    --light--text-color: #1a1a1a;
+    --light--header-color: #1a1a1a;
+    --light--p-color: #101010;
     --light--link-color: #0090a0;
     --light--bg-color: #fff;
     --light--blockquote-color: #606060;
     --light--blockquote-bg-color: #c8c8c820;
     --light--code-bg-color: #eee;
+    --light--em-bg-color: #f73e0030;
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --text-color: var(--dark--text-color);
+        --header-color: var(--dark--header-color);
+	--p-color: var(--dark--p-color);
         --link-color: var(--dark--link-color);
         --bg-color: var(--dark--bg-color);
         --blockquote-color: var(--dark--blockquote-color);
         --blockquote-bg-color: var(--dark--blockquote-bg-color);
         --code-bg-color: var(--dark--code-bg-color);
+	--em-bg-color: var(--dark--em-bg-color);
     }
 }
 @media (prefers-color-scheme: light) {
     :root {
-        --text-color: var(--light--text-color);
+        --header-color: var(--light--header-color);
+	--p-color: var(--light--p-color);
         --link-color: var(--light--link-color);
         --bg-color: var(--light--bg-color);
         --blockquote-color: var(--light--blockquote-color);
         --blockquote-bg-color: var(--light--blockquote-bg-color);
         --code-bg-color: var(--light--code-bg-color);
+	--em-bg-color: var(--light--em-bg-color);
     }
 }
 
 html.dark {
-    --text-color: var(--dark--text-color);
+    --header-color: var(--dark--header-color);
+    --p-color: var(--dark--p-color);
     --link-color: var(--dark--link-color);
     --bg-color: var(--dark--bg-color);
     --blockquote-color: var(--dark--blockquote-color);
     --blockquote-bg-color: var(--dark--blockquote-bg-color);
     --code-bg-color: var(--dark--code-bg-color);
+    --em-bg-color: var(--dark--em-bg-color);
 }
 
 html.light {
-    --text-color: var(--light--text-color);
+    --header-color: var(--light--header-color);
+    --p-color: var(--light--p-color);
     --link-color: var(--light--link-color);
     --bg-color: var(--light--bg-color);
     --blockquote-color: var(--light--blockquote-color);
     --blockquote-bg-color: var(--light--blockquote-bg-color);
     --code-bg-color: var(--light--code-bg-color);
+    --em-bg-color: var(--light--em-bg-color);
 }
 
 html {
-    color: var(--text-color);
+    color: var(--p-color);
     background-color: var(--bg-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--header-color);
 }
 
 a, a:visited {
@@ -109,7 +125,7 @@ blockquote {
 
 .page-title {
     text-decoration: none;
-    color: var(--text-color) !important;
+    color: var(--header-color) !important;
     font-size: 32px;
     font-weight: 700;
 }
@@ -161,7 +177,7 @@ hr {
     height: 0;
     margin: 40px auto;
     border: none;
-    border-top: 2px dotted var(--text-color) !important;
+    border-top: 2px dotted var(--header-color) !important;
     width: 50%;
 }
 
@@ -179,4 +195,9 @@ ul, ol {
 
 li::marker {
     color: var(--link-color);
+}
+
+em {
+    padding: 0 2px;
+    background-color: var(--em-bg-color);
 }
