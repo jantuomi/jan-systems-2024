@@ -85,7 +85,7 @@
       (define kind (assocdr 'kind (cdr pair)))
       (define link (pipe path
 			 (@ replace (format "^~A\\/?" src-dir) "/")
-			 (@ replace "\\.md$" ".html")))
+			 (@ replace "\\.md$" "")))
       (format "* [~A (~A) [~A]](~A)" title date kind link))
 
     (define index-lis (map to-li fm-sorted))
