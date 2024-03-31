@@ -26,7 +26,7 @@ body {
 
     --light--header-color: #1a1a1a;
     --light--p-color: #101010;
-    --light--link-color: #0090a0;
+    --light--link-color: #007973;
     --light--bg-color: #fff;
     --light--blockquote-color: #606060;
     --light--blockquote-bg-color: #c8c8c820;
@@ -93,6 +93,7 @@ h1, h2, h3, h4, h5, h6 {
 a, a:visited {
     color: var(--link-color);
     text-decoration: none;
+    font-weight: bold;
 }
 
 a:hover {

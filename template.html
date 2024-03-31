@@ -82,8 +82,11 @@ $endif$
 $body$
 
 <script>
-document.querySelector("#dark-mode-btn").tagName = "button";
-document.querySelector("#dark-mode-btn").innerHTML = "🌓";
+const b = document.createElement("button");
+b.innerHTML = "🌓";
+b.setAttribute("id", "dark-mode-btn");
+b.setAttribute("aria-label", "Toggle dark mode");
+document.querySelector("#dark-mode-btn").replaceWith(b);
 
 const initialManualColorScheme = localStorage.getItem("colorScheme");
 // If null, no manual color scheme is set
