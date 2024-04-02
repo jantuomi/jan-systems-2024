@@ -119,5 +119,32 @@ document.querySelector("#dark-mode-btn").addEventListener("click", function () {
 });
 </script>
 
+$if(date)$
+$if(title)$
+$if(slug)$
+<div style="display: none;" class="h-entry">
+  <div class="e-content p-name">$title$</div>
+  <a rel="author" class="p-author h-card" href="https://jan.systems">
+    <img class="u-photo" src="https://jan.systems/files/Jan_Tuomi_headshot.jpg">
+    Jan Tuomi
+  </a>
+  <a class="u-url" href="https://jan.systems/archive/$slug$">
+    Published <time class="dt-published">$date$</time>
+  </a>
+</div>
+$endif$
+$endif$
+$endif$
+
+<div style="display: none;" class="h-card">
+  <a class="u-url" href="https://jan.systems">jan.systems</a>
+  <a class="u-url" href="https://github.com/jantuomi" rel="me">GitHub</a>
+  <p class="p-note">Digital gardener, senior software engineer by trade.</p>
+  <img class="u-photo" src="https://jan.systems/files/Jan_Tuomi_headshot.jpg">
+  <p class="p-name"Jan Tuomi</p>
+  <p class="p-nickname">@jantuomi</p>
+  <p class="p-country-name">Finland</p>
+</div>
+
 </body>
 </html>
