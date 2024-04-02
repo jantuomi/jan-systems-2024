@@ -109,6 +109,8 @@ blockquote {
     background: none;
     font-size: 30px;
     cursor: pointer;
+    padding: 0;
+    margin: 0;
 }
 
 .header-row {
