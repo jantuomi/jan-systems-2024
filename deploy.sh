@@ -10,4 +10,3 @@ docker push "$IMAGE"
 
 # Deploy
 ssh jan.systems 'cd deployments/garden && bash dc-restart.sh'
-

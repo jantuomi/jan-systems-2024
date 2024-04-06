@@ -86,16 +86,19 @@
       (define link (pipe path
 			 (@ replace (format "^~A\\/?" src-dir) "/")
 			 (@ replace "\\.md$" "")))
-      (format "* [~A (~A) [~A]](~A)" title date kind link))
+      (format "<li class=\"archive-entry\"><a href=\"~A\">~A</a><small><span>[~A]</span> (~A)</small></li>"
+	      link title kind date))
 
     (define index-lis (map to-li fm-sorted))
     (define out-md (string-append "---\n"
-				  "title: Archive\n"
+				  "title: archive – jan's garden\n"
 				  "hide-body-title: defined\n"
 				  "---\n"
 				  "# Archive\n\n"
 				  "Follow via [RSS](/feed.xml) ([Huh?](https://aboutfeeds.com/))\n\n"
-				  (string-join index-lis "\n")))
+				  (string-append "<ul class=\"archive-list\">"
+						 (string-join index-lis "\n")
+						 "</ul>")))
 
     (with-output-to-file (make-pathname archive-dir "index.md")
       (λ () (print out-md))))

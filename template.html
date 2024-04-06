@@ -59,7 +59,8 @@ $if(mathjax)$
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 $endif$
   $math$
-$endif$
+  $endif$
+  <link rel="authorization_endpoint" href="https://indieauth.com/auth">
 </head>
 <body>
   <div class="header-row">
@@ -82,7 +83,10 @@ $endif$
   <h1>$title$ $if(date)$<small>($date$)</small>$endif$ $if(kind)$<small>[$kind$]</small>$endif$</h1>
   $endif$
   $endif$
+
+<main>
 $body$
+</main>
 
 <script>
 const b = document.createElement("button");
@@ -141,10 +145,15 @@ $endif$
   <a class="u-url" href="https://github.com/jantuomi" rel="me">GitHub</a>
   <p class="p-note">Digital gardener, senior software engineer by trade.</p>
   <img class="u-photo" src="https://jan.systems/files/Jan_Tuomi_headshot.jpg" loading="lazy">
-  <p class="p-name"Jan Tuomi</p>
+  <p class="p-name">Jan Tuomi</p>
   <p class="p-nickname">@jantuomi</p>
   <p class="p-country-name">Finland</p>
 </div>
+
+<script src="/static/unfold.js"></script>
+<script>
+  Unfold.bind("#unfold");
+</script>
 
 </body>
 </html>

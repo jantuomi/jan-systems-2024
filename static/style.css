@@ -94,6 +94,7 @@ a, a:visited {
     color: var(--link-color);
     text-decoration: none;
     font-weight: bold;
+    cursor: pointer;
 }
 
 a:hover {
@@ -204,3 +205,34 @@ em {
     padding: 0 2px;
     background-color: var(--em-bg-color);
 }
+
+.webrings p {
+    margin: 0 !important;
+}
+
+.archive-list {
+    margin-left: 15px;
+    padding-left: 0;
+}
+
+.archive-entry {
+    list-style: disclosure-closed;
+    margin-bottom: 8px;
+}
+
+.archive-entry a {
+    line-height: 25px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.archive-entry small {
+    margin-top: -10px;
+    display: block;
+    font-size: 16px;
+}
+
+.archive-entry small span {
+    color: var(--header-color);
+}
+
