@@ -150,9 +150,15 @@ $endif$
   <p class="p-country-name">Finland</p>
 </div>
 
-<script src="/static/unfold.js"></script>
-<script>
-  Unfold.bind("#unfold");
+<script src="/static/reveal-unfold.js"></script>
+<style data-unfold-include>
+  .reveal .slides {
+    text-align: left;
+  }
+</style>
+<script>Unfold.enable({
+  theme: "black",
+  revealCss: document.querySelector("[data-unfold-include]").innerHTML });
 </script>
 
 </body>
