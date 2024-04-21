@@ -22,7 +22,7 @@ body {
     --dark--blockquote-color: #ccc;
     --dark--blockquote-bg-color: #60606020;
     --dark--code-bg-color: #353535;
-    --dark--em-bg-color: #bbf4;
+    --dark--h2-bg-color: #fd501bb0;
 
     --light--header-color: #1a1a1a;
     --light--p-color: #101010;
@@ -31,7 +31,7 @@ body {
     --light--blockquote-color: #606060;
     --light--blockquote-bg-color: #c8c8c820;
     --light--code-bg-color: #eee;
-    --light--em-bg-color: #f73e0030;
+    --light--h2-bg-color: #f73e0030;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -43,7 +43,7 @@ body {
         --blockquote-color: var(--dark--blockquote-color);
         --blockquote-bg-color: var(--dark--blockquote-bg-color);
         --code-bg-color: var(--dark--code-bg-color);
-	--em-bg-color: var(--dark--em-bg-color);
+	--h2-bg-color: var(--dark--h2-bg-color);
     }
 }
 @media (prefers-color-scheme: light) {
@@ -55,7 +55,7 @@ body {
         --blockquote-color: var(--light--blockquote-color);
         --blockquote-bg-color: var(--light--blockquote-bg-color);
         --code-bg-color: var(--light--code-bg-color);
-	--em-bg-color: var(--light--em-bg-color);
+	--h2-bg-color: var(--light--h2-bg-color);
     }
 }
 
@@ -67,7 +67,7 @@ html.dark {
     --blockquote-color: var(--dark--blockquote-color);
     --blockquote-bg-color: var(--dark--blockquote-bg-color);
     --code-bg-color: var(--dark--code-bg-color);
-    --em-bg-color: var(--dark--em-bg-color);
+    --h2-bg-color: var(--dark--h2-bg-color);
 }
 
 html.light {
@@ -78,7 +78,7 @@ html.light {
     --blockquote-color: var(--light--blockquote-color);
     --blockquote-bg-color: var(--light--blockquote-bg-color);
     --code-bg-color: var(--light--code-bg-color);
-    --em-bg-color: var(--light--em-bg-color);
+    --h2-bg-color: var(--light--h2-bg-color);
 }
 
 html {
@@ -88,6 +88,12 @@ html {
 
 h1, h2, h3, h4, h5, h6 {
     color: var(--header-color);
+}
+
+h2, h4, h6 {
+    padding: 0 8px;
+    display: inline-block;
+    background-color: var(--h2-bg-color);
 }
 
 a, a:visited {
@@ -199,11 +205,6 @@ ul, ol {
 
 li::marker {
     color: var(--link-color);
-}
-
-em {
-    padding: 0 2px;
-    background-color: var(--em-bg-color);
 }
 
 .webrings p {

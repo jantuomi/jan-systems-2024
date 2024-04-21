@@ -84,9 +84,15 @@ $endif$
   $endif$
   $endif$
 
-<main>
-$body$
-</main>
+  <main>
+    $if(slideshow)$
+    <blockquote data-unfold-hidden>
+      This post is a <a href="?unfold=1">literate slideshow</a>.
+    </blockquote>
+    $endif$
+
+    $body$
+  </main>
 
 <script>
 const b = document.createElement("button");
@@ -150,6 +156,7 @@ $endif$
   <p class="p-country-name">Finland</p>
 </div>
 
+$if(slideshow)$
 <script src="/static/reveal-unfold.js"></script>
 <style data-unfold-include>
   .reveal .slides {
@@ -160,6 +167,7 @@ $endif$
   theme: "black",
   revealCss: document.querySelector("[data-unfold-include]").innerHTML });
 </script>
+$endif$
 
 </body>
 </html>

@@ -68,10 +68,12 @@
     (define alt (submatch m 1))
     (define link (submatch m 2))
 
-    ;; if link is absolute or external, leave as is.
+    ;; if link is absolute, external or in-page, leave as is.
     ;; otherwise, normalize it to the current directory context
     (define ret-link
-      (if (or (substring=? "https://" link) (substring=? "/" link))
+      (if (or (substring=? "https://" link)
+	      (substring=? "/" link)
+	      (substring=? "#" link))
 	  link
 	  ;; else
 	  (normalize-pathname (make-pathname cwd link))))
