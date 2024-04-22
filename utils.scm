@@ -45,4 +45,25 @@
     (match (assoc key alist)
       [#f #f]
       [pair (cdr pair)]))
+
+  (define (lookup key alist)
+    (if (not alist)
+	#f
+	(assocdr key alist)))
+
+  (define (filter pred xs)
+    (if (null? xs)
+	xs
+	(if (pred (car xs))
+	    (cons (car xs) (filter pred (cdr xs)))
+	    (filter pred (cdr xs)))))
+
+  (define (flatten1 as)
+    (foldl append '() as))
+
+  (define (flatmap f xs)
+    (flatten1 (map f xs)))
+
+  (define (falsy? x) (not x))
+  (define (truthy? x) (not (falsy? x)))
   )
