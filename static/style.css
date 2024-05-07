@@ -19,7 +19,7 @@ body {
     --dark--p-color: #eee;
     --dark--link-color: #bbf;
     --dark--bg-color: #222;
-    --dark--blockquote-color: #ccc;
+    --dark--blockquote-color: #ddd;
     --dark--blockquote-bg-color: #60606020;
     --dark--code-bg-color: #353535;
     --dark--h2-bg-color: #fd501bb0;
@@ -107,10 +107,6 @@ a:hover {
     text-decoration: underline !important;
 }
 
-blockquote {
-    color: var(--blockquote-color);
-}
-
 #dark-mode-btn {
     border: none;
     background: none;
@@ -141,22 +137,29 @@ blockquote {
 }
 
 code {
-    padding: 8px 10px;
+    padding: 6px;
     background-color: var(--code-bg-color);
+    white-space: nowrap;
 }
 
 pre, div.sourceCode {
     padding: 8px 10px;
     overflow-x:	scroll;
+    color: inherit;
     background-color: var(--code-bg-color);
+}
+
+.sourceCode {
+    line-height: 22px;
 }
 
 blockquote {
     display: block;
+    color: var(--blockquote-color);
     background-color: var(--blockquote-bg-color);
     border-left: 10px solid var(--link-color);
     margin: 20px 0;
-    padding: 2px 10px;
+    padding: 2px 20px;
     quotes: "\201C""\201D""\2018""\2019";
 }
 
@@ -237,3 +240,24 @@ li::marker {
     color: var(--header-color);
 }
 
+table td {
+    width: 1%; /* I have no idea why this makes columns responsive width */
+    min-width: 150px;
+}
+
+th {
+    border-top: none;
+}
+
+tbody {
+    border-bottom: none;
+    border-top: 2px solid var(--blockquote-color);
+}
+
+table .odd {
+    background-color: var(--blockquote-bg-color);
+}
+
+table {
+    margin: 20px 0 30px;
+}

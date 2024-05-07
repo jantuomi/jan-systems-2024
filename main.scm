@@ -204,7 +204,7 @@
 		     "-o" html-path
 		     "--standalone"
 		     "--template" template-path
-		     "--highlight-style" "pygments"))
+		     "--highlight-style" "breezedark"))
   (define output-port (process "pandoc" args))
   ;; read and discard output in order to wait for completion
   (read-string #f output-port)
@@ -252,7 +252,7 @@
 		    "-w" "https://jan.systems"
 		    paths)))
   (define output (read-string #f output-port))
-  (printf "[info] writing RSS feed to \"~A\"~%" feed-xml-path)
+  (printf "[info] writing RSS feed...~%")
   (with-output-to-file feed-xml-path
     (λ () (print output)))
 
