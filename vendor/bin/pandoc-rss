@@ -135,7 +135,7 @@ generate_feed_item ()
         set -- -V body: "$@"
     fi
 
-    pandoc --template="$TEMPLATES_DIR/item.xml" "$@" "$input_file"
+    pandoc --template="$TEMPLATES_DIR/item.xml" --no-highlight "$@" "$input_file"
 }
 
 generate_feed_items ()
