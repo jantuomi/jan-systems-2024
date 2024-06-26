@@ -40,7 +40,8 @@
 		    (λ () (read-lines))))
 
     (define (inner return)
-      (if (not (string=? "---" (car lines)))
+      (if (or (null? lines)
+	      (not (string=? "---" (car lines))))
 	  (return #f))
 
       (define fm (collect-fm-lines (cdr lines)))

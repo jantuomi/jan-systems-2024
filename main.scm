@@ -41,10 +41,15 @@
 (assert (> (string-length out-dir) 0))
 (assert (> (string-length template-path) 0))
 
-
 (define (preprocess-md md-path out-path)
-  (define md (with-input-from-file md-path
-	       (λ () (read-string #f))))
+  (define md-or-eof (with-input-from-file md-path
+		      (λ () (read-string #f))))
+
+  (define md (if (eof-object? md-or-eof)
+		 (begin (printf "[warn] \"~A\" is empty, using an empty md file...~%" md-path)
+			"")
+		 ;; else
+		 md-or-eof))
 
   (define cwd (decompose-pathname md-path))
   (define out-path-dir (decompose-pathname out-path))
