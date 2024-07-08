@@ -131,6 +131,10 @@ a, a:visited {
     cursor: pointer;
 }
 
+p a {
+    text-decoration: underline;
+}
+
 a:hover {
     text-decoration: underline !important;
 }
