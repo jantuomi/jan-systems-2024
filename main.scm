@@ -209,7 +209,10 @@
 		     "-o" html-path
 		     "--standalone"
 		     "--template" template-path
-		     "--highlight-style" "breezedark"))
+		     ;; any style is ok here, the styles are overriden with CSS
+		     ;; to support dark and light themes.
+		     ;; --no-highlight would produce a non-formatted output
+		     "--highlight-style" "pygments"))
   (define output-port (process "pandoc" args))
   ;; read and discard output in order to wait for completion
   (read-string #f output-port)

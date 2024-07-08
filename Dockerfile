@@ -11,7 +11,6 @@ RUN chicken-install -from-list requirements.list
 COPY vendor ./vendor
 COPY *.sh ./
 COPY static ./static
-COPY template.html ./template.html
-COPY *.scm ./
+COPY template.html *.scm ./
 
 CMD ["/bin/bash", "monitor-inotifywait.sh"]
