@@ -129,14 +129,11 @@ a, a:visited {
     text-decoration: none;
     font-weight: bold;
     cursor: pointer;
+    text-underline-position: under;
 }
 
-p a {
+a:hover, a:focus {
     text-decoration: underline;
-}
-
-a:hover {
-    text-decoration: underline !important;
 }
 
 #dark-mode-btn {
