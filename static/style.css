@@ -210,8 +210,9 @@ figure img {
 }
 
 figure figcaption {
-    margin: -10px 0 10px;
-    color: var(--blockquote-color);
+    /* Hide from non-screen-reader users */
+    opacity: 0;
+    height: 0;
 }
 
 hr {
