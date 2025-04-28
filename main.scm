@@ -12,9 +12,11 @@
 	(chicken process)
 	(chicken irregex)
 	(chicken sort)
+	(chicken port)
 	(only srfi-13 string-join)
 	srfi-18
 	matchable
+	json
 
 	utils
 	md-parser
@@ -32,6 +34,8 @@
 			   "archive"))
 (define static-dir (or (get-environment-variable "STATIC_DIR")
 		       "static"))
+(define linklog-json-path (or (get-environment-variable "LINKLOG_JSON_PATH")
+			      "linklog.json"))
 
 (define archive-index-md-path (create-temporary-file ".md"))
 (define feed-xml-path (create-temporary-file ".xml"))
@@ -317,6 +321,49 @@
 
   (cons archive-entry db))
 
+(define (generate-linklog db)
+  (printf "[info] generating linklog page\n")
+  (define json-str (with-input-from-file linklog-json-path
+		 (λ () (read-string #f))))
+  (define json (call-with-input-string json-str json-read))
+  (define posts (map vector->list (assocdr "posts" (vector->list json))))
+
+  (define (to-li item)
+    (define title (assocdr "description" item))
+    (define link (assocdr "href" item))
+    (define date (assocdr "time" item))
+    (format "<li class=\"archive-entry\"><a href=\"~A\">~A</a><small>(~A)</small></li>"
+	    link title date))
+
+  (define link-lis (map to-li posts))
+  (define ul (string-append "<ul class=\"archive-list\">"
+			    (string-join link-lis "\n")
+			    "</ul>"))
+
+  (define out-md (string-append "---\n"
+				"title: linklog - jan's garden\n"
+				"hide-body-title: defined\n"
+				"---\n"
+				"# Linklog\n\n"
+				"My public bookmarks are stored in [Linkhut](https://ln.ht/~jant). This page contains a summary of the most recent updates (refreshed hourly). Follow via [RSS](https://ln.ht/_/feed/~jant) ([Huh?](https://aboutfeeds.com/))\n\n"
+				ul))
+
+  (define work-md-path (make-pathname work-dir "_linklog.md"))
+  (define work-html-path (make-pathname work-dir "_linklog.html"))
+  (define out-path (make-pathname (list out-dir) "linklog.html"))
+  
+  (with-output-to-file work-md-path
+    (λ () (print out-md)))
+
+  (define linklog-entry (list `("file-type" . "md")
+			      `("src-path" . ,work-md-path)
+			      `("work-md-path" . ,work-md-path)
+			      `("work-html-path" . ,work-html-path)
+			      `("out-path" . ,out-path)))
+
+  (cons linklog-entry db)
+  )
+
 (define (install-output db)
   (clean-dir out-dir)
   (move-all-to-out-dir db out-dir)
@@ -335,6 +382,7 @@
       (@ add-now-page-to-db)
       (@ preprocess-md-files)
       (@ generate-feed)
+      (@ generate-linklog)
       (@ apply-pandoc-to-md-files)
       (@ install-output))
 
