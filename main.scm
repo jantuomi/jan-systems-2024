@@ -291,7 +291,7 @@
     (define date (assocdr "date" post))
     (define kind (assocdr "kind" post))
     (define slug (assocdr "slug" post))
-    (define link (format "~A/~A" archive-subdir slug))
+    (define link (format "/~A/~A" archive-subdir slug))
     (format "<li class=\"archive-entry\"><a href=\"~A\">~A</a><small><span>[~A]</span> (~A)</small></li>"
 	    link title kind date))
 
