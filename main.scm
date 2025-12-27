@@ -13,7 +13,7 @@
 	(chicken irregex)
 	(chicken sort)
 	(chicken port)
-	(only srfi-13 string-join)
+	(only srfi-13 string-join string-prefix?)
 	srfi-18
 	matchable
 	json
@@ -286,7 +286,9 @@
 
   (define (to-li post)
     (printf "[info] indexing post ")
-    (define title (assocdr "title" post))
+    (define title-raw (assocdr "title" post))
+    ;; strip quotes
+    (define title (if (string-prefix? "\"" title-raw) (substring title-raw 1 (- (string-length title-raw) 1)) title-raw))
     (printf "\"~A\"~%" title)
     (define date (assocdr "date" post))
     (define kind (assocdr "kind" post))
@@ -353,7 +355,7 @@
   (define work-md-path (make-pathname work-dir "_linklog.md"))
   (define work-html-path (make-pathname work-dir "_linklog.html"))
   (define out-path (make-pathname (list out-dir) "linklog.html"))
-  
+
   (with-output-to-file work-md-path
     (λ () (print out-md)))
 

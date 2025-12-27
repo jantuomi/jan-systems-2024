@@ -1,174 +1,204 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <link rel="shortcut icon" type="image/png" href="/static/favicon.png" />
-$for(author-meta)$
-  <meta name="author" content="$author-meta$" />
-$endfor$
-$if(date-meta)$
-  <meta name="dcterms.date" content="$date-meta$" />
-$endif$
-$if(keywords)$
-  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
-$endif$
-$if(description-meta)$
-  <meta name="description" content="$description-meta$" />
-$endif$
-  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="generator" content="pandoc" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=yes"
+        />
+        <link rel="shortcut icon" type="image/png" href="/static/favicon.png" />
+        $for(author-meta)$
+        <meta name="author" content="$author-meta$" />
+        $endfor$ $if(date-meta)$
+        <meta name="dcterms.date" content="$date-meta$" />
+        $endif$ $if(keywords)$
+        <meta
+            name="keywords"
+            content="$for(keywords)$$keywords$$sep$, $endfor$"
+        />
+        $endif$ $if(description-meta)$
+        <meta name="description" content="$description-meta$" />
+        $endif$
+        <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
 
-  <style>
-    $styles.html()$
-  </style>
+        <style>
+            $styles.html()$
+        </style>
 
-  <style>
-@font-face {
-    font-family: 'Merriweather';
-    src: url('/static/Merriweather-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
+        <style>
+            @font-face {
+                font-family: "PT Sans";
+                src: url("/static/PTSans-Regular.ttf") format("truetype");
+                font-weight: normal;
+                font-style: normal;
+            }
 
-@font-face {
-    font-family: 'Merriweather';
-    src: url('/static/Merriweather-Bold.ttf') format('truetype');
-    font-weight: bold;
-    font-style: normal;
-}
+            @font-face {
+                font-family: "PT Sans";
+                src: url("/static/PTSans-Bold.ttf") format("truetype");
+                font-weight: bold;
+                font-style: normal;
+            }
 
-@font-face {
-    font-family: 'Merriweather';
-    src: url('/static/Merriweather-Italic.ttf') format('truetype');
-    font-weight: normal;
-    font-style: italic;
-}
-  </style>
+            @font-face {
+                font-family: "PT Sans";
+                src: url("/static/PTSans-Italic.ttf") format("truetype");
+                font-weight: normal;
+                font-style: italic;
+            }
 
-  <link rel="stylesheet" href="/static/style.css" />
-  <link rel="alternate"
-    type="application/rss+xml"
-    title="RSS Feed for jan.systems"
-    href="/feed.xml" />
+            @font-face {
+                font-family: "PT Sans";
+                src: url("/static/PTSans-BoldItalic.ttf") format("truetype");
+                font-weight: bold;
+                font-style: italic;
+            }
+        </style>
 
-$for(header-includes)$
-  $header-includes$
-$endfor$
-$if(math)$
-$if(mathjax)$
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-$endif$
-  $math$
-  $endif$
-  <link rel="authorization_endpoint" href="https://indieauth.com/auth">
-</head>
-<body>
-  <div class="header-row">
-    <a class="page-title" href="/">jan&#39;s garden</a>
-    <div id="dark-mode-btn"></div>
-  </div>
-  <nav>
-    <a href="/archive">archive</a>
-    <span aria-hidden="true"> &#x2022; </span>
-    <a href="/linklog">linklog</a>
-    <span aria-hidden="true"> &#x2022; </span>
-    <a href="/now">now</a>
-    <span aria-hidden="true"> &#x2022; </span>
-    <a href="/projects">projects</a>
-  </nav>
+        <link rel="stylesheet" href="/static/style.css" />
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title="RSS Feed for jan.systems"
+            href="/feed.xml"
+        />
 
-  $if(title)$
-  $if(hide-body-title)$
-  $else$
-  <h1>$title$ $if(date)$<small>($date$)</small>$endif$ $if(kind)$<small>[$kind$]</small>$endif$</h1>
-  $endif$
-  $endif$
+        $for(header-includes)$ $header-includes$ $endfor$ $if(math)$
+        $if(mathjax)$
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        $endif$ $math$ $endif$
+        <link rel="authorization_endpoint" href="https://indieauth.com/auth" />
+    </head>
+    <body>
+        <div class="header-row">
+            <a class="page-title" href="/">jan&#39;s garden</a>
+            <div id="dark-mode-btn"></div>
+        </div>
+        <nav>
+            <a href="/archive">archive</a>
+            <span aria-hidden="true"> &#x2022; </span>
+            <a href="/linklog">linklog</a>
+            <span aria-hidden="true"> &#x2022; </span>
+            <a href="/now">now</a>
+            <span aria-hidden="true"> &#x2022; </span>
+            <a href="/projects">projects</a>
+        </nav>
 
-  <main>
-    $if(slideshow)$
-    <blockquote data-unfold-hidden>
-      This post is a <a href="?unfold=1">literate slideshow</a>.
-    </blockquote>
-    $endif$
+        $if(title)$ $if(hide-body-title)$ $else$
+        <h1>
+            <div>$title$</div>
+            $if(date)$<small>($date$)</small>$endif$
+            $if(kind)$<small>[$kind$]</small>$endif$
+        </h1>
+        $endif$ $endif$
 
-    $body$
-  </main>
+        <main>
+            $if(slideshow)$
+            <blockquote data-unfold-hidden>
+                This post is a <a href="?unfold=1">literate slideshow</a>.
+            </blockquote>
+            $endif$ $body$
+        </main>
 
-<script>
-const b = document.createElement("button");
-b.innerHTML = "🌓";
-b.setAttribute("id", "dark-mode-btn");
-b.setAttribute("aria-label", "Toggle dark mode");
-document.querySelector("#dark-mode-btn").replaceWith(b);
+        <script>
+            const b = document.createElement("button");
+            b.innerHTML = "🌓";
+            b.setAttribute("id", "dark-mode-btn");
+            b.setAttribute("aria-label", "Toggle dark mode");
+            document.querySelector("#dark-mode-btn").replaceWith(b);
 
-const initialManualColorScheme = localStorage.getItem("colorScheme");
-// If null, no manual color scheme is set
-if (initialManualColorScheme === "dark") {
-  document.body.parentElement.classList.add("dark");
-} else if (initialManualColorScheme === "light") {
-  document.body.parentElement.classList.add("light");
-}
+            const initialManualColorScheme =
+                localStorage.getItem("colorScheme");
+            // If null, no manual color scheme is set
+            if (initialManualColorScheme === "dark") {
+                document.body.parentElement.classList.add("dark");
+            } else if (initialManualColorScheme === "light") {
+                document.body.parentElement.classList.add("light");
+            }
 
-function getCurrentManualColorScheme() {
-  if (document.body.parentElement.classList.contains("dark")) return "dark";
-  if (document.body.parentElement.classList.contains("light")) return "light";
-  return null;
-}
+            function getCurrentManualColorScheme() {
+                if (document.body.parentElement.classList.contains("dark"))
+                    return "dark";
+                if (document.body.parentElement.classList.contains("light"))
+                    return "light";
+                return null;
+            }
 
-document.querySelector("#dark-mode-btn").addEventListener("click", function () {
-  const manualColorScheme = getCurrentManualColorScheme();
-  const userPreferenceIsDark = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document
+                .querySelector("#dark-mode-btn")
+                .addEventListener("click", function () {
+                    const manualColorScheme = getCurrentManualColorScheme();
+                    const userPreferenceIsDark =
+                        window.matchMedia &&
+                        window.matchMedia("(prefers-color-scheme: dark)")
+                            .matches;
 
-  const currentColorScheme = manualColorScheme ?? (userPreferenceIsDark ? "dark" : "light");
-  const newColorScheme = currentColorScheme === "dark" ? "light" : "dark";
+                    const currentColorScheme =
+                        manualColorScheme ??
+                        (userPreferenceIsDark ? "dark" : "light");
+                    const newColorScheme =
+                        currentColorScheme === "dark" ? "light" : "dark";
 
-  document.body.parentElement.classList.remove("dark", "light");
-  document.body.parentElement.classList.add(newColorScheme);
+                    document.body.parentElement.classList.remove(
+                        "dark",
+                        "light",
+                    );
+                    document.body.parentElement.classList.add(newColorScheme);
 
-  localStorage.setItem("colorScheme", newColorScheme);
-});
-</script>
+                    localStorage.setItem("colorScheme", newColorScheme);
+                });
+        </script>
 
-$if(date)$
-$if(title)$
-$if(slug)$
-<div style="display: none;" class="h-entry">
-  <div class="e-content p-name">$title$</div>
-  <a rel="author" class="p-author h-card" href="https://jan.systems">
-    <img class="u-photo" src="https://jan.systems/files/Jan_Tuomi_headshot.jpg" loading="lazy">
-    Jan Tuomi
-  </a>
-  <a class="u-url" href="https://jan.systems/archive/$slug$">
-    Published <time class="dt-published">$date$</time>
-  </a>
-</div>
-$endif$
-$endif$
-$endif$
+        $if(date)$ $if(title)$ $if(slug)$
+        <div style="display: none" class="h-entry">
+            <div class="e-content p-name">$title$</div>
+            <a rel="author" class="p-author h-card" href="https://jan.systems">
+                <img
+                    class="u-photo"
+                    src="https://jan.systems/files/Jan_Tuomi_headshot.jpg"
+                    loading="lazy"
+                />
+                Jan Tuomi
+            </a>
+            <a class="u-url" href="https://jan.systems/archive/$slug$">
+                Published <time class="dt-published">$date$</time>
+            </a>
+        </div>
+        $endif$ $endif$ $endif$
 
-<div style="display: none;" class="h-card">
-  <a class="u-url" href="https://jan.systems">jan.systems</a>
-  <a class="u-url" href="https://github.com/jantuomi" rel="me">GitHub</a>
-  <p class="p-note">Digital gardener, senior software engineer by trade.</p>
-  <img class="u-photo" src="https://jan.systems/files/Jan_Tuomi_headshot.jpg" loading="lazy">
-  <p class="p-name">Jan Tuomi</p>
-  <p class="p-nickname">@jantuomi</p>
-  <p class="p-country-name">Finland</p>
-</div>
+        <div style="display: none" class="h-card">
+            <a class="u-url" href="https://jan.systems">jan.systems</a>
+            <a class="u-url" href="https://github.com/jantuomi" rel="me"
+                >GitHub</a
+            >
+            <p class="p-note">
+                Digital gardener, senior software engineer by trade.
+            </p>
+            <img
+                class="u-photo"
+                src="https://jan.systems/files/Jan_Tuomi_headshot.jpg"
+                loading="lazy"
+            />
+            <p class="p-name">Jan Tuomi</p>
+            <p class="p-nickname">@jantuomi</p>
+            <p class="p-country-name">Finland</p>
+        </div>
 
-$if(slideshow)$
-<script src="/static/reveal-unfold.js"></script>
-<style data-unfold-include>
-  .reveal .slides {
-    text-align: left;
-  }
-</style>
-<script>Unfold.enable({
-  theme: "black",
-  revealCss: document.querySelector("[data-unfold-include]").innerHTML });
-</script>
-$endif$
-
-</body>
+        $if(slideshow)$
+        <script src="/static/reveal-unfold.js"></script>
+        <style data-unfold-include>
+            .reveal .slides {
+                text-align: left;
+            }
+        </style>
+        <script>
+            Unfold.enable({
+                theme: "black",
+                revealCss: document.querySelector("[data-unfold-include]")
+                    .innerHTML,
+            });
+        </script>
+        $endif$
+    </body>
 </html>
