@@ -22,6 +22,156 @@
 	md-parser
 	)
 
+;; Utility: link adjacent archive posts (prev/newer, next/older)
+(define (add-prev-next-to-posts db)
+  ;; Build a mapping from out-path -> navigation HTML, then patch each post's
+  ;; work HTML (or, if already installed, the final out HTML).
+  ;;
+  ;; IMPORTANT: Only include real archive posts.
+  ;;
+  ;; The most recent "now" page exists as both:
+  ;; - /archive/now-YYYY-season (real post)
+  ;; - /archive/now             (synthetic alias page)
+  ;;
+  ;; The alias must be excluded here, otherwise adjacency can point "previous" to
+  ;; itself for the "now-*" post.
+  ;;
+  ;; Derive a stable "archive slug" from out-path, and de-duplicate based on it.
+  ;; Relying on frontmatter `slug` is brittle because some pages don't have it.
+  (define (archive-slug entry)
+    (define out (lookup "out-path" entry))
+    (if (not (string? out))
+	#f
+	(let* ((out2 (replace (format "^~A\\/" out-dir) "" out))
+	       (out3 (replace "^\\/" "" out2))
+	       ;; drop leading "archive/" and trailing ".html"
+	       (no-archive (replace (format "^~A\\/" archive-subdir) "" out3))
+	       (no-ext (replace "\\.html$" "" no-archive)))
+	  (if (> (string-length no-ext) 0) no-ext #f))))
+
+  (define (only-archive-md-with-date entry)
+    (and (equal? "md" (assocdr "file-type" entry))
+	 (truthy? (lookup "is-archive?" entry))
+	 (truthy? (lookup "date" entry))
+	 (let ((out (lookup "out-path" entry)))
+	   (and (string? out)
+		(irregex-search (irregex (format "^~A/~A/" out-dir archive-subdir)) out)
+		(let ((s (archive-slug entry)))
+		  (and (string? s)
+		       (not (string=? s "now"))))))))
+
+  (define posts (filter only-archive-md-with-date db))
+
+  (define (dedupe-by-archive-slug entries)
+    (define (go xs seen acc)
+      (if (null? xs)
+	  (reverse acc)
+	  (let* ((e (car xs))
+		 (s (archive-slug e)))
+	    (if (and (string? s) (member s seen))
+		(go (cdr xs) seen acc)
+		(go (cdr xs)
+		    (if (string? s) (cons s seen) seen)
+		    (cons e acc))))))
+    (go entries '() '()))
+
+  (define posts-unique (dedupe-by-archive-slug posts))
+
+  ;; oldest first for clean adjacency indexing, then compute neighbors
+  (define (less-oldest-first a b)
+    (string<? (assocdr "date" a) (assocdr "date" b)))
+
+  (define sorted (sort posts-unique less-oldest-first))
+
+  (define (strip-quotes s)
+    (if (and (string? s)
+	     (>= (string-length s) 2)
+	     (string-prefix? "\"" s))
+	(substring s 1 (- (string-length s) 1))
+	s))
+
+  (define (nav-link class label-before label-after entry)
+    (define slug (or (archive-slug entry) ""))
+    (define title (strip-quotes (or (lookup "title" entry) "")))
+    (define href (format "/~A/~A" archive-subdir slug))
+    (string-append
+     "<a class=\"post-nav-link " class "\" href=\"" href "\">"
+     (if label-before (string-append label-before " ") "")
+     title
+     (if label-after (string-append " " label-after) "")
+     "</a>"))
+
+  (define (nav-html prev next)
+    ;; `prev` and `next` here refer to chronological neighbors:
+    ;; - prev = older post
+    ;; - next = newer post
+    ;; Render with chevrons and align prev to the left, next to the right.
+    (define prev-html
+      (if prev
+	  (nav-link "post-nav-prev" "‹" #f prev)
+	  ""))
+    (define next-html
+      (if next
+	  (nav-link "post-nav-next" #f "›" next)
+	  ""))
+    (string-append
+     "<nav class=\"post-nav\" aria-label=\"Post navigation\">"
+     "<div class=\"post-nav-left\">"
+     prev-html
+     "</div>"
+     "<div class=\"post-nav-right\">"
+     next-html
+     "</div>"
+     "</nav>"))
+
+  (define (patch-file path nav)
+    (if (and (string? path) (file-exists? path))
+	(let* ((html-or-eof (with-input-from-file path (λ () (read-string #f))))
+	       (html (if (eof-object? html-or-eof) "" html-or-eof))
+	       (marker "<!--POST_NAV-->")
+	       (patched
+		;; If marker exists, replace it; otherwise, append nav before </main> if present, else append at end.
+		(let ((m (irregex-search (irregex (irregex-quote marker)) html)))
+		  (if m
+		      (irregex-replace/all (irregex (irregex-quote marker)) html nav)
+		      (let ((close-main (irregex-search (irregex "</main>") html)))
+			(if close-main
+			    (irregex-replace/all (irregex "</main>") html (string-append nav "</main>"))
+			    (string-append html "\n" nav)))))))
+	  (with-output-to-file path (λ () (print patched))))
+	#f))
+
+  ;; Iterate with indices to compute adjacent posts
+  (define (loop xs prev)
+    (if (null? xs)
+	#f
+	(let* ((curr (car xs))
+	       (rest (cdr xs))
+	       (next (if (null? rest) #f (car rest)))
+	       ;; Sorted oldest->newest, so:
+	       ;; - prev link should go to older => prev
+	       ;; - next link should go to newer => next
+	       ;;
+	       ;; Guard against self-links (can happen if duplicates slip through):
+	       ;; drop any neighbor whose derived archive slug equals the current one.
+	       (curr-slug (archive-slug curr))
+	       (prev* (if (and prev curr-slug (archive-slug prev) (string=? (archive-slug prev) curr-slug))
+			  #f
+			  prev))
+	       (next* (if (and next curr-slug (archive-slug next) (string=? (archive-slug next) curr-slug))
+			  #f
+			  next))
+	       (nav (nav-html prev* next*))
+	       (work-html (lookup "work-html-path" curr))
+	       (out-html (lookup "out-path" curr)))
+	  ;; Prefer patching work file (before install), but if missing, patch final out file.
+	  (or (patch-file work-html nav)
+	      (patch-file out-html nav))
+	  (loop rest curr))))
+
+  (loop sorted #f)
+  db)
+
 ;; application
 
 (define src-dir (or (get-environment-variable "SRC_DIR")
@@ -208,6 +358,93 @@
 
   db)
 
+(define (generate-homepage db)
+  ;; Replace the LATEST_POSTS placeholder inside the generated `index.html`
+  ;; (created from the normal content pipeline) with HTML for the newest blog
+  ;; posts from the in-memory db.
+  (define (inner return)
+    ;; We want posts that are:
+    ;; - markdown-backed
+    ;; - archive entries
+    ;; - have a date for sorting
+    ;; (any kind is allowed)
+    (define (is-archive-md-post-with-date? entry)
+      (and (equal? "md" (assocdr "file-type" entry))
+	   (truthy? (lookup "is-archive?" entry))
+	   (truthy? (lookup "date" entry))))
+
+    (define posts (filter is-archive-md-post-with-date? db))
+
+    ;; newest first
+    (define (less? a b)
+      (string>? (assocdr "date" a) (assocdr "date" b)))
+
+    (define sorted (sort posts less?))
+
+    ;; take first n (non-destructive)
+    (define (take n xs)
+      (if (or (<= n 0) (null? xs))
+	  '()
+	  (cons (car xs) (take (- n 1) (cdr xs)))))
+
+    (define latest (take 3 sorted))
+
+    ;; Strip quotes from frontmatter fields like `"Title"`
+    (define (strip-quotes s)
+      (if (and (string? s)
+	       (>= (string-length s) 2)
+	       (string-prefix? "\"" s))
+	  (substring s 1 (- (string-length s) 1))
+	  s))
+
+    (define (post->html-li post)
+      (define title (strip-quotes (or (lookup "title" post) "")))
+      (define date (or (lookup "date" post) ""))
+      (define slug (or (lookup "slug" post) ""))
+      (define link (format "/~A/~A" archive-subdir slug))
+      (format "<li class=\"archive-entry\"><a href=\"~A\">~A</a><small>(~A)</small></li>"
+	      link title date))
+
+    (define latest-lis (map post->html-li latest))
+    (define latest-html
+      (string-append
+       "<section class=\"latest-posts\">"
+       "<h2>Latest posts</h2>"
+       "<ul class=\"archive-list\">"
+       (string-join latest-lis "\n")
+       "</ul>"
+       "</section>"))
+
+    ;; Patch the final installed homepage HTML (out/index.html). This is more
+    ;; robust than patching the work file because install-output copies files
+    ;; into `out/` after pandoc has run.
+    (define out-index-path (make-pathname (list out-dir) "index.html"))
+    (if (not (and (string? out-index-path) (file-exists? out-index-path)))
+	(return db)
+	#f)
+
+    (define html-or-eof
+      (with-input-from-file out-index-path (λ () (read-string #f))))
+    (define html (if (eof-object? html-or-eof) "" html-or-eof))
+
+    (define placeholder "LATEST_POSTS")
+    (define placeholder-irx (irregex placeholder))
+    (define m (irregex-search placeholder-irx html))
+
+    (define replaced
+      (if m
+	  ;; Use irregex-replace/all directly to avoid any module/import ambiguity
+	  ;; around `replace-all` at runtime.
+	  (irregex-replace/all placeholder-irx html latest-html)
+	  html))
+
+    (with-output-to-file out-index-path
+      (λ () (print replaced)))
+
+    db)
+
+  (call/cc inner))
+
 (define (pandoc-md-to-html md-path html-path)
   (define args (list md-path
 		     "-o" html-path
@@ -388,6 +625,8 @@
       (@ generate-feed)
       (@ generate-linklog)
       (@ apply-pandoc-to-md-files)
-      (@ install-output))
+      (@ install-output)
+      (@ add-prev-next-to-posts)
+      (@ generate-homepage))
 
 (printf "[info] done.~%")

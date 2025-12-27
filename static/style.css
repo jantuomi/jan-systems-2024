@@ -1,6 +1,6 @@
 body {
     font-size: 17px;
-    margin: 20px auto;
+    margin: 20px auto 50px;
     padding: 10px 15px;
     max-width: 800px;
 
@@ -293,6 +293,28 @@ li::marker {
 
 .archive-entry small span {
     color: var(--header-color);
+}
+
+/* Post navigation (previous/next) */
+.post-nav {
+    padding-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.post-nav-left {
+    flex: 1;
+    text-align: left;
+}
+
+.post-nav-right {
+    flex: 1;
+    text-align: right;
+}
+
+.post-nav-link {
+    display: inline-block;
 }
 
 table td {
