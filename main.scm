@@ -102,26 +102,10 @@
      "</a>"))
 
   (define (nav-html prev next)
-    ;; `prev` and `next` here refer to chronological neighbors:
-    ;; - prev = older post
-    ;; - next = newer post
-    ;; Render with chevrons and align prev to the left, next to the right.
-    (define prev-html
-      (if prev
-	  (nav-link "post-nav-prev" "‹" #f prev)
-	  ""))
-    (define next-html
-      (if next
-	  (nav-link "post-nav-next" #f "›" next)
-	  ""))
     (string-append
      "<nav class=\"post-nav\" aria-label=\"Post navigation\">"
-     "<div class=\"post-nav-left\">"
-     prev-html
-     "</div>"
-     "<div class=\"post-nav-right\">"
-     next-html
-     "</div>"
+     (if prev (string-append "<div class=\"post-nav-left\">" (nav-link "post-nav-prev" "‹" #f prev) "</div>") "")
+     (if next (string-append "<div class=\"post-nav-right\">" (nav-link "post-nav-next" "›" #f next) "</div>") "")
      "</nav>"))
 
   (define (patch-file path nav)
