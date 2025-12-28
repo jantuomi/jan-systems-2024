@@ -187,6 +187,13 @@ div.sourceCode {
     color: inherit;
 }
 
+@media screen and (max-width: 600px) {
+    pre,
+    div.sourceCode {
+        margin: 20px -15px;
+    }
+}
+
 .sourceCode {
     line-height: 1.3;
     border: 1px solid var(--blockquote-color);
@@ -195,6 +202,7 @@ div.sourceCode {
 .sourceCode code,
 .sourceCode pre {
     border: none;
+    min-width: max-content;
 }
 
 blockquote {
@@ -224,6 +232,13 @@ figure {
     border: 1px solid var(--p-color);
 }
 
+@media screen and (max-width: 600px) {
+    figure {
+        max-width: calc(100% + 2 * 15px);
+        margin: 20px -15px;
+    }
+}
+
 figure img {
     margin: 0;
     border-bottom: 1px solid var(--p-color);
@@ -233,7 +248,8 @@ figure figcaption {
     font-style: italic;
     text-align: center;
     margin: 7px auto 15px;
-    width: 70%;
+    max-width: 550px;
+    padding: 0 10px;
     color: var(--blockquote-color);
 }
 
