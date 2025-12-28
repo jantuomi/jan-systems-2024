@@ -476,8 +476,8 @@
   (define output-port
     (process "vendor/bin/pandoc-rss"
 	     (apply list "-s"
-		    "-t" "jan's garden"
-		    "-d" "RSS feed for Jan's personal digital garden"
+		    "-t" "Jan Tuomi"
+		    "-d" "RSS feed for Jan's personal blog and digital garden"
 		    "-l" "https://jan.systems"
 		    "-f" link-format
 		    "-n" "en-GB"
@@ -520,7 +520,7 @@
 
   (define index-lis (map to-li posts-sorted))
   (define out-md (string-append "---\n"
-				"title: archive – jan's garden\n"
+				"title: archive – Jan Tuomi\n"
 				"hide-body-title: defined\n"
 				"---\n"
 				"# Archive\n\n"
@@ -564,7 +564,7 @@
 			    "</ul>"))
 
   (define out-md (string-append "---\n"
-				"title: linklog - jan's garden\n"
+				"title: linklog - Jan Tuomi\n"
 				"hide-body-title: defined\n"
 				"---\n"
 				"# Linklog\n\n"
