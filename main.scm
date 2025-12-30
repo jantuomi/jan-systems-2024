@@ -568,7 +568,7 @@
 				"hide-body-title: defined\n"
 				"---\n"
 				"# Linklog\n\n"
-				"My public bookmarks are stored in [Linkhut](https://ln.ht/~jant). This page contains a summary of the most recent updates. Updated hourly.\n\n"
+				"My public bookmarks are stored in [Linkhut](https://ln.ht/~jant). This page contains a summary of the most recent updates. Updated sporadically.\n\n"
 				"Follow my full Linkhut feed via [RSS](https://ln.ht/_/feed/~jant) ([Huh?](https://aboutfeeds.com/)).\n\n"
 				"See the blogs I follow with [dynamic OPML](/files/blogroll.opml) ([explanation](https://opml.org/)). Updated daily.\n\n"
 				ul))
